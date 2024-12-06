@@ -2,9 +2,6 @@ package config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import lombok.NonNull;
-
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -15,7 +12,7 @@ public class HikariConnectionPool {
 
     static {
         try {
-            Path path = Paths.get(HikariConnectionPool.class.getClassLoader().getResource("database/database.sqlite").toURI());
+            Path path = Path.of("C:\\Users\\saymk\\IdeaProjects\\CurrenciesApp\\src\\main\\webapp\\WEB-INF\\data\\database.sqlite");
             HikariConfig config = new HikariConfig();
             config.setJdbcUrl("jdbc:sqlite:" + path);
             config.setDriverClassName("org.sqlite.JDBC");
@@ -23,7 +20,7 @@ public class HikariConnectionPool {
             config.setConnectionTimeout(10000);
 
             dataSource = new HikariDataSource(config);
-        } catch (URISyntaxException | NullPointerException e) {
+        } catch (NullPointerException e) {
             throw new RuntimeException("Не удалось загрузить базу данных.");
         }
     }
