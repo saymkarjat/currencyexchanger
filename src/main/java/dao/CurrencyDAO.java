@@ -49,7 +49,7 @@ public class CurrencyDAO implements CrudDAO<Currency> {
             return Optional.ofNullable(currency);
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e.getMessage());
         }
     }
 

@@ -39,6 +39,7 @@ public class CurrenciesServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
+        ObjectMapper mapper = new ObjectMapper();
         String code = req.getParameter("code");
         String name = req.getParameter("name");
         String sign = req.getParameter("sign");
@@ -46,6 +47,7 @@ public class CurrenciesServlet extends HttpServlet {
         if (!Util.isCurrencyValid(code, name, sign)){
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().write("Некорректно введена валюта");
+            return;
         }
         try {
             CurrencyDTO currencyDTO = new CurrencyDTO();
@@ -53,7 +55,9 @@ public class CurrenciesServlet extends HttpServlet {
             currencyDTO.setName(name);
             currencyDTO.setSign(sign);
             service.addCurrency(currencyDTO);
-            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.setStatus(HttpServletResponse.SC_CREATED);
+            CurrencyDTO currencyByCode = service.getCurrencyByCode(code);
+            resp.getWriter().write(mapper.writeValueAsString(currencyByCode));
         } catch (CurrencyAlreadyExistException e) {
             resp.setStatus(HttpServletResponse.SC_CONFLICT);
             resp.getWriter().write("Валюта с таким кодом уже существует");
